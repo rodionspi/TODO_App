@@ -47,21 +47,32 @@
             <span class="field-error" data-error-for="title"></span>
           </div>
 
-          <fieldset class="field">
+          <fieldset class="type-field">
             <legend>Typ</legend>
-            <div class="choice-row">
-              <label class="choice">
-                <input type="radio" name="todo-type" value="task" required />
-                Task
+
+            <div class="type-options">
+              <label class="type-card">
+                <input
+                  type="radio"
+                  name="todo-type"
+                  value="task"
+                  required
+                />
+                <span>Task</span>
               </label>
-              <label class="choice">
-                <input type="radio" name="todo-type" value="event" />
-                Event
+
+              <label class="type-card">
+                <input
+                  type="radio"
+                  name="todo-type"
+                  value="event"
+                />
+                <span>Event</span>
               </label>
             </div>
+
             <span class="field-error" data-error-for="type"></span>
           </fieldset>
-
           <div class="field">
             <label for="description">Beschreibung</label>
             <textarea

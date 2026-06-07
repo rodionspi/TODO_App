@@ -365,3 +365,59 @@ textarea {
     width: 100%;
   }
 }
+
+.type-field {
+  border: 1px solid #d1d5db;
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.type-field legend {
+  padding: 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.type-options {
+  display: flex;
+  gap: 16px;
+}
+
+.type-card {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 22px 24px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.type-card:hover {
+  border-color: #9ca3af;
+}
+
+.type-card input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+
+.type-card span {
+  font-size: 18px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.field-error {
+  display: block;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #dc2626;
+}
