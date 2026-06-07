@@ -1,0 +1,11 @@
+title: "TODO App By Rodion"
+description: "Simple TODO app"
+baseurl: "" # Set to "/REPO_NAME" if serving as project page
+url: "https://USERNAME.github.io" # Replace USERNAME with your GitHub username
+theme: minima
+markdown: kramdown
+plugins:
+  - jekyll-feed
+paginate: 5
+author:
+  name: "Rodion"
