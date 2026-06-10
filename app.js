@@ -9,6 +9,14 @@ const resultCount = document.getElementById("result-count");
 const searchInput = document.getElementById("search");
 const template = document.getElementById("todo-card-template");
 
+const viewListBtn = document.getElementById("view-list-btn");
+const viewCalendarBtn = document.getElementById("view-calendar-btn");
+const calendarView = document.getElementById("calendar-view");
+const calPrevBtn = document.getElementById("cal-prev");
+const calNextBtn = document.getElementById("cal-next");
+const calMonthYear = document.getElementById("cal-month-year");
+const calendarGrid = document.getElementById("calendar-grid");
+
 const titleInput = document.getElementById("title");
 const descriptionInput = document.getElementById("description");
 const authorInput = document.getElementById("author");
@@ -23,6 +31,8 @@ const progressInput = document.getElementById("progress");
 let todos = loadTodos();
 let editingId = null;
 let searchQuery = "";
+let isCalendarView = false;
+let calDate = new Date();
 
 // Load stored data from localStorage.
 function loadTodos() {
@@ -38,6 +48,11 @@ function loadTodos() {
     return [];
   }
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  todos = loadTodos();
+  renderTodos(); 
+});
 
 // Persist the current list in localStorage.
 function saveTodos() {
@@ -272,11 +287,90 @@ function renderTodos() {
     todoList.appendChild(buildTodoCard(todo));
   });
 
-  emptyState.hidden = visible.length > 0;
+  if (isCalendarView) {
+    todoList.hidden = true;
+    calendarView.hidden = false;
+    renderCalendar(visible);
+    emptyState.hidden = true;
+  } else {
+    todoList.hidden = false;
+    calendarView.hidden = true;
+    emptyState.hidden = visible.length > 0;
+  }
+
   if (normalizedQuery) {
     resultCount.textContent = `${visible.length} Treffer von ${todos.length}`;
   } else {
     resultCount.textContent = `${todos.length} TODOs`;
+  }
+}
+
+function renderCalendar(visibleTodos) {
+  const year = calDate.getFullYear();
+  const month = calDate.getMonth();
+  
+  // Update Header
+  const monthNames = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+  calMonthYear.textContent = `${monthNames[month]} ${year}`;
+
+  calendarGrid.innerHTML = "";
+
+  const firstDay = new Date(year, month, 1).getDay(); // 0 is Sunday
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  // Make Monday the first day of the week
+  let startGrid = firstDay === 0 ? 6 : firstDay - 1;
+
+  for (let i = 0; i < startGrid; i++) {
+    const emptyDiv = document.createElement("div");
+    emptyDiv.className = "calendar-day empty";
+    calendarGrid.appendChild(emptyDiv);
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dayDiv = document.createElement("div");
+    dayDiv.className = "calendar-day";
+    dayDiv.innerHTML = `<span class="day-num">${day}</span>`;
+
+    const currentDateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+    const dayTasks = visibleTodos.filter(todo => {
+      return todo.startDate <= currentDateStr && todo.endDate >= currentDateStr;
+    });
+
+    dayTasks.forEach(todo => {
+      const priority = computePriority(todo.important, todo.urgent);
+      const taskDiv = document.createElement("div");
+      taskDiv.className = "calendar-task";
+      taskDiv.textContent = todo.title;
+      taskDiv.title = `${todo.title} (${todo.progress}%)`;
+
+      taskDiv.style.background = priority.code === "A"
+        ? "#ff8b5e"
+        : priority.code === "B"
+        ? "#ffd166"
+        : priority.code === "C"
+        ? "#7ec8ff"
+        : "#d3d6de";
+      
+      if (priority.code === "B" || priority.code === "D") {
+        taskDiv.style.color = "#1e1f1d";
+      }
+
+      taskDiv.addEventListener("click", () => {
+        isCalendarView = false;
+        viewListBtn.classList.add("active");
+        viewListBtn.classList.remove("ghost");
+        viewCalendarBtn.classList.add("ghost");
+        viewCalendarBtn.classList.remove("active");
+        renderTodos();
+        startEdit(todo);
+      });
+
+      dayDiv.appendChild(taskDiv);
+    });
+
+    calendarGrid.appendChild(dayDiv);
   }
 }
 
@@ -365,6 +459,34 @@ todoList.addEventListener("click", (event) => {
     saveTodos();
     renderTodos();
   }
+});
+
+viewListBtn.addEventListener("click", () => {
+  isCalendarView = false;
+  viewListBtn.classList.add("active");
+  viewListBtn.classList.remove("ghost");
+  viewCalendarBtn.classList.add("ghost");
+  viewCalendarBtn.classList.remove("active");
+  renderTodos();
+});
+
+viewCalendarBtn.addEventListener("click", () => {
+  isCalendarView = true;
+  viewCalendarBtn.classList.add("active");
+  viewCalendarBtn.classList.remove("ghost");
+  viewListBtn.classList.add("ghost");
+  viewListBtn.classList.remove("active");
+  renderTodos();
+});
+
+calPrevBtn.addEventListener("click", () => {
+  calDate.setMonth(calDate.getMonth() - 1);
+  renderTodos();
+});
+
+calNextBtn.addEventListener("click", () => {
+  calDate.setMonth(calDate.getMonth() + 1);
+  renderTodos();
 });
 
 // Initial UI state.

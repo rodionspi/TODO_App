@@ -191,6 +191,17 @@
         </div>
 
         <div id="todo-list" class="todo-list"></div>
+        <div id="calendar-view" class="calendar-view" hidden>
+          <div class="calendar-header">
+            <button type="button" class="btn ghost small" id="cal-prev">&lt;</button>
+            <h3 id="cal-month-year">Monat Jahr</h3>
+            <button type="button" class="btn ghost small" id="cal-next">&gt;</button>
+          </div>
+          <div class="calendar-grid-header">
+            <span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span>
+          </div>
+          <div id="calendar-grid" class="calendar-grid"></div>
+        </div>
         <div id="empty-state" class="empty-state" hidden>
           Noch keine TODOs. Fuege die erste Aufgabe hinzu.
         </div>
